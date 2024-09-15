@@ -1,0 +1,136 @@
+# 1.Kubernetes Üzerinden UI Kullanarak Dağıtım Kılavuzu
+
+Bu kılavuz, Kubernetes Dashboard UI kullanarak bir uygulamanın nasıl dağıtılacağını gösterir.
+
+## Gereksinimler
+- Kubernetes Cluster (minikube, Docker Desktop veya herhangi bir Kubernetes ortamı)
+- Kubernetes Dashboard UI
+
+## Adımlar
+
+1. **Kubernetes Dashboard'a Erişim Sağlayın**
+
+   Kubernetes Dashboard'a erişim sağlamak için aşağıdaki komutu kullanın:
+   ```bash
+   kubectl proxy
+Ardından, tarayıcınızda http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/ adresine gidin.
+
+2. **Uygulama Dağıtımı için Deployment Oluşturun**
+
+   Dashboard'a Giriş Yapın
+   Dashboard'a giriş yaptıktan sonra sol menüden "Workloads" seçeneğine gidin.
+
+   **Yeni Deployment Oluşturun**
+     "Deployments" sekmesine tıklayın.
+     "Create" butonuna tıklayın.
+     "Create Deployment" formunda gerekli bilgileri doldurun:
+         Name: my-node-app
+         Container Image: your-dockerhub-username/my-node-app:latest (Docker Hub üzerindeki imaj adı)
+        Port: 80
+   "Next" butonuna tıklayın.
+   "Create" butonuna basarak deployment'ı oluşturun.
+
+3. **Service Oluşturun**
+
+   Sol menüden "Services" seçeneğine gidin.
+   "Create" butonuna tıklayın.
+
+   "Create Service" formunda gerekli bilgileri doldurun:
+     Name: my-node-app-service
+     Type: NodePort
+     Port: 80
+     Target Port: 80
+     NodePort: 31000
+
+   "Next" butonuna tıklayın.
+   "Create" butonuna basarak service'i oluşturun.
+
+4. **Uygulamanızı Test Edin** 
+
+   **Service Bilgilerini Kontrol Edin**
+     Dashboard'da "Services" sekmesinde oluşturduğunuz service'i bulun.
+     "Endpoints" kısmından service'in NodePort numarasını alın.
+     NodePort port numarasını ve Cluster IP'yi not edin.
+
+   **Tarayıcınızda Uygulamanızı Test Edin**
+     Tarayıcınıza şu adresi girin: http://localhost:31000
+     Uygulamanızın "Hello World!" mesajını doğru şekilde gösterdiğini kontrol edin.
+
+     
+### 2. Bash Komutları Kullanarak Dağıtım Kılavuzu
+
+Bu kılavuz, bash komutları kullanarak Kubernetes üzerinde bir Node.js uygulamasını nasıl dağıtacağınızı gösterir.
+
+## Gereksinimler
+- Kubernetes Cluster (minikube, Docker Desktop, veya başka bir Kubernetes ortamı)
+- Kubectl
+
+## Adımlar
+
+1. **Deployment Dosyasını Oluşturun**
+
+   `deployment.yaml` adında bir dosya oluşturun ve aşağıdaki içeriği ekleyin:
+
+   apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-node-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-node-app
+  template:
+    metadata:
+      labels:
+        app: my-node-app
+    spec:
+      containers:
+      - name: my-node-app
+        image: your-dockerhub-username/my-node-app:latest
+        ports:
+        - containerPort: 3000
+
+2. **Deployment Dosyasını Uygulayın**
+
+   Aşağıdaki komutu kullanarak deployment'ı oluşturun:
+     kubectl apply -f deployment.yaml
+
+3. **Service Dosyasını Oluşturun**
+
+   `service.yaml` adında bir dosya oluşturun ve aşağıdaki içeriği ekleyin:
+
+   apiVersion: v1
+kind: Service
+metadata:
+  name: my-node-app-service
+spec:
+  selector:
+    app: my-node-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+4. **Service Dosyasını Uygulayın**
+   Aşağıdaki komutu kullanarak service'i oluşturun:
+     kubectl apply -f service.yaml
+
+5. **Uygulamanızı Test Edin**
+
+   **Service Bilgilerini Kontrol Edin**
+   Aşağıdaki komutu kullanarak service'in bilgilerini kontrol edin:
+     kubectl get services
+   Çıktıda my-node-app-service'in NodePort numarasını ve IP adresini not edin.
+
+   **Tarayıcınızda Uygulamanızı Test Edin**
+   Tarayıcınıza şu adresi girin: http://localhost:31000
+   Uygulamanızın "Hello World!" mesajını doğru şekilde gösterdiğini kontrol edin.
+   
+
+Bu README dosyası, Kubernetes üzerinde UI ve bash komutları kullanarak uygulama dağıtımı yapmayı adım adım açıklayan kılavuzlar sunar. Her iki yöntemi de kullanarak uygulamanızın dağıtımını gerçekleştirebilir ve test edebilirsiniz.
+
+
+
+

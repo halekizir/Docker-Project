@@ -1,0 +1,12 @@
+{
+  "name": "redis-app",
+  "version": "1.0.0",
+  "main": "redis-app.js",
+  "scripts": {
+    "start": "node redis-app.js"
+  },
+  "dependencies": {
+    "redis": "^4.0.0",
+    "redis-app": "file:"
+  }
+}

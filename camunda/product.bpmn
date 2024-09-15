@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.27.0">
+  <bpmn:process id="OrderProcessing" name="Order Processing" isExecutable="true">
+    <bpmn:startEvent id="StartEvent" name="Order Placed" />
+    <bpmn:task id="Task_CreateOrder" name="Create Order" />
+    <bpmn:task id="Task_ProcessPayment" name="Process Payment" />
+    <bpmn:task id="Task_PrepareOrder" name="Prepare Order" />
+    <bpmn:task id="Task_ShipOrder" name="Ship Order" />
+    <bpmn:endEvent id="EndEvent" name="Order Delivered" />
+    <bpmn:exclusiveGateway id="Gateway_PaymentDecision" name="Payment Successful?" />
+    <bpmn:task id="Task_InformUser" name="Inform User" />
+    <bpmn:sequenceFlow id="Flow_StartToCreateOrder" sourceRef="StartEvent" targetRef="Task_CreateOrder" />
+    <bpmn:sequenceFlow id="Flow_CreateOrderToProcessPayment" sourceRef="Task_CreateOrder" targetRef="Task_ProcessPayment" />
+    <bpmn:sequenceFlow id="Flow_ProcessPaymentToGateway" sourceRef="Task_ProcessPayment" targetRef="Gateway_PaymentDecision" />
+    <bpmn:sequenceFlow id="Flow_GatewayToPrepareOrder" sourceRef="Gateway_PaymentDecision" targetRef="Task_PrepareOrder">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${paymentSuccess == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToInformUser" sourceRef="Gateway_PaymentDecision" targetRef="Task_InformUser">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${paymentSuccess == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_PrepareOrderToShipOrder" sourceRef="Task_PrepareOrder" targetRef="Task_ShipOrder" />
+    <bpmn:sequenceFlow id="Flow_ShipOrderToEnd" sourceRef="Task_ShipOrder" targetRef="EndEvent" />
+    <bpmn:sequenceFlow id="Flow_InformUserToEnd" sourceRef="Task_InformUser" targetRef="EndEvent" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram">
+    <bpmndi:BPMNPlane id="BPMNPlane" bpmnElement="OrderProcessing">
+      <bpmndi:BPMNShape id="StartEventShape" bpmnElement="StartEvent">
+        <dc:Bounds x="150" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEventShape" bpmnElement="EndEvent">
+        <dc:Bounds x="1432" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1411" y="68" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ShipOrderShape" bpmnElement="Task_ShipOrder">
+        <dc:Bounds x="1030" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_PrepareOrderShape" bpmnElement="Task_PrepareOrder">
+        <dc:Bounds x="790" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_PaymentDecisionShape" bpmnElement="Gateway_PaymentDecision" isMarkerVisible="true">
+        <dc:Bounds x="625" y="93" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="143" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_InformUserShape" bpmnElement="Task_InformUser">
+        <dc:Bounds x="660" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ProcessPaymentShape" bpmnElement="Task_ProcessPayment">
+        <dc:Bounds x="420" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CreateOrderShape" bpmnElement="Task_CreateOrder">
+        <dc:Bounds x="260" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_StartToCreateOrderEdge" bpmnElement="Flow_StartToCreateOrder">
+        <di:waypoint x="186" y="118" />
+        <di:waypoint x="260" y="116" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CreateOrderToProcessPaymentEdge" bpmnElement="Flow_CreateOrderToProcessPayment">
+        <di:waypoint x="360" y="118" />
+        <di:waypoint x="420" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ProcessPaymentToGatewayEdge" bpmnElement="Flow_ProcessPaymentToGateway">
+        <di:waypoint x="520" y="122" />
+        <di:waypoint x="629" y="122" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GatewayToPrepareOrderEdge" bpmnElement="Flow_GatewayToPrepareOrder">
+        <di:waypoint x="674" y="117" />
+        <di:waypoint x="790" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GatewayToInformUserEdge" bpmnElement="Flow_GatewayToInformUser">
+        <di:waypoint x="669" y="124" />
+        <di:waypoint x="665" y="341" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PrepareOrderToShipOrderEdge" bpmnElement="Flow_PrepareOrderToShipOrder">
+        <di:waypoint x="890" y="115" />
+        <di:waypoint x="1030" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ShipOrderToEndEdge" bpmnElement="Flow_ShipOrderToEnd">
+        <di:waypoint x="1130" y="117" />
+        <di:waypoint x="1433" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_InformUserToEndEdge" bpmnElement="Flow_InformUserToEnd">
+        <di:waypoint x="760" y="356" />
+        <di:waypoint x="1450" y="356" />
+        <di:waypoint x="1450" y="128" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

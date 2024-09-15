@@ -1,0 +1,13 @@
+{
+    "name": "docker-node-app",
+    "version": "1.0.0",
+    "description": "Basit Docker Node.js uygulaması",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "docker-node-app": "file:",
+        "express": "^4.17.1"
+    }
+}
